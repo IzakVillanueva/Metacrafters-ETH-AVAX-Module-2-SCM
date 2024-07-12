@@ -1,15 +1,16 @@
 import {useState, useEffect} from "react";
 import {ethers} from "ethers";
-import atm_abi from "../artifacts/contracts/Assessment.sol/Assessment.json";
+import atm_abi from "../artifacts/contracts/Assessment.sol/Tavern.json";
 
 export default function HomePage() {
   const [ethWallet, setEthWallet] = useState(undefined);
   const [account, setAccount] = useState(undefined);
   const [atm, setATM] = useState(undefined);
-  const [balance, setBalance] = useState(undefined);
-  const [message, setMessage] = useState("");
+  const [tab, setTab] = useState(undefined);
+  const [inputAmount, setInputAmount] = useState(1);
+  const [level, setLevel] = useState(0);
 
-  const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+  const contractAddress = "0xc5a5C42992dECbae36851359345FE25997F5C42d";
   const atmABI = atm_abi.abi;
 
   const getWallet = async() => {
@@ -54,19 +55,17 @@ export default function HomePage() {
     setATM(atmContract);
   }
 
-  const getBalance = async() => {
+  const getTab = async() => {
     if (atm) {
-      setBalance((await atm.getBalance()).toNumber());
+      setTab((await atm.getTab()).toNumber());
     }
   }
 
-  const getMessage = async() => {
+  const getLevel = async() => {
     if (atm) {
-      setMessage(await atm.getMessage());
+      setLevel((await atm.getLevel()).toNumber());
     }
   }
-
-  const [inputAmount, setInputAmount] = useState(1);
 
   const handleInputChange = (event) => {
     setInputAmount(event.target.value);
@@ -75,16 +74,56 @@ export default function HomePage() {
   const deposit = async() => {
     if (atm) {
       let tx = await atm.deposit(inputAmount);
-      await tx.wait()
-      getBalance();
+      await tx.wait();
+      getTab();
     }
   }
 
-  const withdraw = async() => {
+  const purchaseBeer = async() => {
     if (atm) {
-      let tx = await atm.withdraw(inputAmount);
+      let tx = await atm.purchase(1);
+      await tx.wait();
+      getTab();
+
+      let lx = await atm.increaseLevel(2);
+      await lx.wait();
+      getLevel();
+    }
+  }
+
+  const purchaseWine = async() => {
+    if (atm) {
+      let tx = await atm.purchase(4);
+      await tx.wait();
+      getTab();
+
+      let lx = await atm.increaseLevel(5);
+      await lx.wait();
+      getLevel();
+    }
+  }
+
+  const purchaseChampagne = async() => {
+    if (atm) {
+      let tx = await atm.purchase(7);
+      await tx.wait();
+      getTab();
+
+      let lx = await atm.increaseLevel(8);
+      await lx.wait();
+      getLevel();
+    }
+  }
+
+  const purchaseVodka = async() => {
+    if (atm) {
+      let tx = await atm.purchase(6);
       await tx.wait()
-      getBalance();
+      getTab();
+
+      let lx = await atm.increaseLevel(11);
+      await lx.wait();
+      getLevel();
     }
   }
 
@@ -99,26 +138,32 @@ export default function HomePage() {
       return <button className="button-style" onClick={connectAccount}>Please connect your Metamask wallet</button>
     }
 
-    if (balance == undefined) {
-      getBalance();
+    if (tab == undefined) {
+      getTab();
     }
 
-    if (message == undefined) {
-      getMessage();
+    if (level == undefined) {
+      getLevel();
     }
 
     return (
       <div>
         <p>Your Account: {account}</p>
-        <p>Your Balance: {balance}</p>
+        <p className='bac'>Your Current Blood Alochol Concentration: 0.{level}%</p>
+        <p className='tab'>Your Current Tab: {tab} ETH</p>
         <button className="button-style" onClick={deposit}>Deposit ETH</button>
-        <button className="button-style" onClick={withdraw}>Withdraw ETH</button>
         <style jsx>{`
         p{
           width: auto;
           font-size: 0.9em;
           font-family: Verdana;
           font-weight: bold;
+        }
+        .bac{
+          color: #AA4A44;
+        }
+        .tab{
+          color: #AAFF00;
         }
         .button-style{
           background-color: #2F8682;
@@ -128,6 +173,7 @@ export default function HomePage() {
           margin: 0 10px;
           padding: 10px;
           cursor: pointer;
+          font-weight: bold;
         }
         `}
         </style>
@@ -139,60 +185,142 @@ export default function HomePage() {
 
   return (
     <main className="container">
-      <header><h1 className="title">Welcome to the Krysallion Bank!</h1></header>
-      <h2>Enter the amount to deposit/withdraw in ETH:</h2>
-      <input
-        type="number"
-        value={inputAmount}
-        onChange={handleInputChange}
-        placeholder="Enter deposit amount in ETH"
-        style={{ margin: '10px', 
-          padding: '5px',
-          fontFamily: 'Tahoma',
-          fontSize: '1.6em' }}
-      />
-      <div className="bankDetails">
-        {initUser()}
+      <header><h1 className="title">Drink your way to the Trusty Tavern!</h1></header>
+      <div className='parent'>
+        <div className='bankDetails'>
+          <h2>Enter the amount to deposit in ETH:</h2>
+          <input
+            type="number"
+            value={inputAmount}
+            onChange={handleInputChange}
+            placeholder="Enter deposit amount in ETH"
+            style={{ margin: '10px', 
+              padding: '5px',
+              fontFamily: 'Tahoma',
+              fontSize: '1.6em' }}
+          />
+        </div>
+        <div className="bankDetails">
+          {initUser()}
+        </div>
       </div>
-      <div className="message">
-        <p>{message}</p>
+      <div className='menu'>
+          <div className='row'>
+              <div className='item'>
+                <img 
+                  src="https://icons.iconarchive.com/icons/iconarchive/fat-sugar-food/256/Drink-Beer-icon.png"
+                  alt="new" width="400" height="400"
+                />
+                <h3>Beer 1 ETH</h3>
+                <button className="button-style" onClick={purchaseBeer}>Purchase</button>
+              </div>
+              <div className='item'>
+                <img 
+                  src="https://images.vexels.com/media/users/3/214542/isolated/lists/0b2ce2d5441305592a00ca20e6d65b51-wine-hand-drawn-bottle.png"
+                  alt="new" width="400" height="400"
+                />
+                <h3>Wine 4 ETH</h3>
+                <button className="button-style" onClick={purchaseWine}>Purchase</button>
+              </div>
+          </div>
+          <div className='row'>
+              <div className='item'>
+                <img 
+                  src="https://images.vexels.com/media/users/3/299726/isolated/lists/9017bffeaa27404ed14f87e6d8925d04-bottle-of-champagne-with-a-number-1-on-it.png"
+                  alt="new" width="400" height="400"
+                />
+                <h3>Champagne 7 ETH</h3>
+                <button className="button-style" onClick={purchaseChampagne}>Purchase</button>
+              </div>
+              <div className='item'>
+                <img 
+                  src="https://cdn-icons-png.flaticon.com/256/5821/5821488.png"
+                  alt="new" width="400" height="400"
+                />
+                <h3>Vodka 6 ETH</h3>
+                <button className="button-style" onClick={purchaseVodka}>Purchase</button>
+              </div>
+          </div>
       </div>
       <style jsx>{`
         .container {
           background-color: #16223F;
-          height: 95vh;
-          padding: 3em 0 0 0;
+          padding: 2em 0 1em 0;
           text-align: center
         }
         h2{
-          margin: 30px 0 10px 0;
           font-family: Tahoma;
-          font-size: 1.3em;
-          color: #D3A518;
+          font-size: 1em;
         }
         .title{
-          background: linear-gradient(to right, #16223F, #FCB0DB, #16223F);
+          background: linear-gradient(to right, #16223F, #CD7F32, #16223F);
           border-radius: 0.7em;
-          width: 65vw;
+          width: 80vw;
           margin: 0 auto;
-          color: #D3A518;
+          color: #F0E68C;
           padding: 1rem;
           font-family: Tahoma;
-          font-size: 4.8em;
+          font-size: 3.6em;
           text-shadow: 
-          -1px -1px 0 #000,  
-          1px -1px 0 #000,
-          -1px  1px 0 #000,
-          1px  1px 0 #000;
+          -3px -3px 0 #000,  
+          3px -3px 0 #000,
+          -3px  3px 0 #000,
+          3px  3px 0 #000;
+        }
+        .parent {
+          border: 5px solid #80461B;
+          border-radius: 0.7em;
+          width: 70vw;
+          margin: 1rem auto;
+          text-align: center;
         }
         .bankDetails{
-          background: linear-gradient(to right, #16223F, #5C3A64, #E4796C, #F9F871, #F9F871, #F9F871, #E4796C, #5C3A64, #16223F);
+          display: inline-block;
+          vertical-align: middle;
+          color: #F0E68C;
           border-radius: 1em;
-          width: 65vw;
           margin: 1em auto;
-          padding: 1rem;
-          font-size: 1.5em;
+          font-size: 1em;
           font-family: Verdana;
+        }
+        .menu {
+          border: 5px solid #80461B;
+          border-radius: 0.7em;
+          width: 90vw;
+          margin: 1rem auto;
+          text-align: center;
+        }
+        .row {
+          border-radius: 0.7em;
+          margin: 0 auto;
+          text-align: center;
+        }
+        .item {
+          border: 1px solid black;
+          padding: 0.5em 0.5em 0 0.5em;
+          display: inline-block;
+          width: 43vw;
+        }
+        h3{
+          color: #F0E68C;
+          padding: 0;
+          font-family: Tahoma;
+          font-size: 2em;
+          text-shadow: 
+          -3px -3px 0 #000,  
+          3px -3px 0 #000,
+          -3px  3px 0 #000,
+          3px  3px 0 #000;
+        }
+        .button-style{
+          background-color: #2F8682;
+          border-radius: 2em;
+          font-size: 0.9em;
+          font-family: Verdana;
+          margin: 0 0 1em 0;
+          padding: 10px;
+          cursor: pointer;
+          font-weight: bold;
         }
       `}
       </style>
