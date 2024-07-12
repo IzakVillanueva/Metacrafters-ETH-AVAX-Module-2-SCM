@@ -1,10 +1,12 @@
 # Metacrafters-ETH-AVAX-Module-2-SCM
 
-This is a simple static website that uses React and Solidity to demonstrate how to connect your metamask wallet to a website to deposit and withdraw coins.
+This is a simple static website created for the Trusty Tavern which uses blockchain and ETH to purchase liquors.
 
 ## Description
 
-This is a Smart Contract Management in Solidity with React as a front end for Metacrafters Assessment Module 2. It uses a preloaded account to test the functions deposit and withdraw. The website will act as an ATM/Bank and users will be able to store their coins. The user can input any amount that they want to store or withdraw from the bank and can also see their current balance.
+![image](https://github.com/user-attachments/assets/9f68fc8e-1af3-4efa-aff6-b4b206799edc)
+
+This is a Smart Contract Management in Solidity called Tavern with React as a front end for Metacrafters Assessment Module 2. It uses a preloaded account to test the functions. The website will act as Tavern and users will be able to deposit using ETH. The user can input any amount that they want to deposit in their tab and can also see their current tab. Users will also be able to purchase different types of liquor with different prices for each. As the user buys liquor, their blood alcohol concentration (BAC) will increase. They will be able to keep track of their BAC as well all throughout their sessions.
 
 ## Getting Started
 
